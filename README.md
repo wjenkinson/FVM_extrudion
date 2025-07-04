@@ -70,11 +70,7 @@ Then open your web browser and navigate to the URL shown in the terminal (usuall
 
 ## Example Visualizations
 
-### Velocity Field
-![Velocity Field](https://raw.githubusercontent.com/yourusername/2d-extrusion-flow-solver/main/examples/velocity_field.png)
-
-### Pressure Field
-![Pressure Field](https://raw.githubusercontent.com/yourusername/2d-extrusion-flow-solver/main/examples/pressure_field.png)
+![detailed_results](example_results.png)
 
 ## Development Status
 
@@ -82,11 +78,8 @@ Then open your web browser and navigate to the URL shown in the terminal (usuall
 - Phase 2: Implementation of parameter sliders (✅ Complete)
 - Phase 3: Finite Volume Solver with Fixed Parameters (✅ Complete)
 - Phase 4: Integrate Solver with Streamlit (✅ Complete)
-- Phase 5: Parameter Hook-Up – Grid Resolution (⏳ In Progress)
-
-## Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
+- Phase 5-8: Parameter Hook-Up
+- Phase 9: Future Extensions, Bingham Plastic, Conical Nozzle
 
 ## License
 
