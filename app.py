@@ -1,6 +1,8 @@
 import streamlit as st
 import numpy as np
 import matplotlib.pyplot as plt
+from solver import solve_stokes_flow, plot_detailed_results
+from matplotlib.colors import LogNorm
 
 # Set page configuration
 st.set_page_config(
@@ -166,30 +168,133 @@ def main():
         
         if st.session_state.run_simulation:
             with st.status("Simulation in progress...", expanded=True) as status:
-                st.write("\n🚀 **Running simulation...** (This is a placeholder)")
+                st.write("\n🚀 **Running simulation...**")
                 progress_bar = st.progress(0, "Initializing...")
-                # Simulate some progress
-                import time
-                for percent_complete in range(100):
-                    time.sleep(0.02)  # Simulate work
-                    progress_bar.progress(percent_complete + 1, f"Running simulation... {percent_complete + 1}%")
-                st.success("✅ Simulation complete!")
-            
-        # Placeholder for visualization
-        st.subheader("Results Visualization")
-        fig, ax = plt.subplots()
-        ax.text(0.5, 0.5, "Simulation results will be displayed here",
-               ha='center', va='center', transform=ax.transAxes)
-        ax.axis('off')
-        st.pyplot(fig)
+                
+                # Get parameters from session state
+                params = st.session_state.params
+                Lx = params['geometry']['length']
+                Ly = params['geometry']['diameter']
+                Nx = params['geometry']['Nx']
+                Ny = params['geometry']['Ny']
+                mu = params['material']['viscosity']
+                rho = params['material']['density']
+                dt = params['simulation']['dt']
+                max_iter = params['simulation']['max_iter']
+                U_inlet = 1.0  # Default inlet velocity (m/s)
+                
+                # Update progress
+                progress_bar.progress(20, "Running solver...")
+                
+                try:
+                    # Call the solver
+                    u, v, p, X, Y = solve_stokes_flow(
+                        Lx=Lx, Ly=Ly, Nx=Nx, Ny=Ny, 
+                        mu=mu, rho=rho, U_inlet=U_inlet,
+                        max_iter=max_iter
+                    )
+                    
+                    # Store results in session state
+                    st.session_state.results = {
+                        'u': u, 'v': v, 'p': p, 'X': X, 'Y': Y
+                    }
+                    
+                    progress_bar.progress(100, "Simulation complete!")
+                    st.success("✅ Simulation complete!")
+                    
+                except Exception as e:
+                    st.error(f"❌ Simulation failed: {str(e)}")
+                    st.session_state.run_simulation = False
+                    return
         
-        # Placeholder for data export
-        st.download_button(
-            label="Export Results",
-            data="Simulation data will be available here",
-            file_name="simulation_results.csv",
-            mime="text/csv"
-        )
+        # Display results if available
+        if 'results' in st.session_state and st.session_state.run_simulation:
+            results = st.session_state.results
+            
+            # Create tabs for different visualizations
+            tab1, tab2, tab3 = st.tabs(["Velocity Field", "Pressure Field", "Detailed View"])
+            
+            with tab1:
+                st.subheader("Velocity Field")
+                fig, ax = plt.subplots(figsize=(10, 4))
+                
+                # Calculate velocity magnitude
+                vel_mag = np.sqrt(results['u']**2 + results['v']**2)
+                
+                # Plot velocity magnitude
+                c = ax.contourf(results['X'], results['Y'], vel_mag, levels=20, cmap='viridis')
+                plt.colorbar(c, label='Velocity Magnitude (m/s)')
+                
+                # Add streamlines
+                ax.streamplot(
+                    results['X'], results['Y'], results['u'], results['v'], 
+                    color='white', linewidth=0.7, density=1.5, arrowsize=1
+                )
+                
+                ax.set_xlabel('x (m)')
+                ax.set_ylabel('y (m)')
+                ax.set_aspect('equal')
+                st.pyplot(fig)
+                
+            with tab2:
+                st.subheader("Pressure Field")
+                fig, ax = plt.subplots(figsize=(10, 4))
+                
+                # Plot pressure field
+                c = ax.contourf(
+                    results['X'], results['Y'], results['p'], 
+                    levels=20, cmap='plasma'
+                )
+                plt.colorbar(c, label='Pressure (Pa)')
+                
+                ax.set_xlabel('x (m)')
+                ax.set_ylabel('y (m)')
+                ax.set_aspect('equal')
+                st.pyplot(fig)
+                
+            with tab3:
+                st.subheader("Detailed Results")
+                fig = plot_detailed_results(
+                    results['u'], results['v'], results['p'], 
+                    results['X'], results['Y']
+                )
+                st.pyplot(fig)
+            
+            # Data export
+            st.subheader("Data Export")
+            
+            # Create a DataFrame for better CSV export
+            import pandas as pd
+            import io
+            
+            # Create a DataFrame with the data
+            df = pd.DataFrame({
+                'x (m)': results['X'].flatten(),
+                'y (m)': results['Y'].flatten(),
+                'u (m/s)': results['u'].flatten(),
+                'v (m/s)': results['v'].flatten(),
+                'p (Pa)': results['p'].flatten()
+            })
+            
+            # Convert DataFrame to CSV string
+            csv = df.to_csv(index=False)
+            
+            # Create download button
+            st.download_button(
+                label="Download CSV",
+                data=csv,
+                file_name="velocity_field.csv",
+                mime="text/csv",
+                help="Export X, Y, U, V, P data as CSV"
+            )
+        else:
+            # Show placeholder when no results are available
+            st.subheader("Results Visualization")
+            fig, ax = plt.subplots()
+            ax.text(0.5, 0.5, "Click 'Run Simulation' to see results",
+                   ha='center', va='center', transform=ax.transAxes)
+            ax.axis('off')
+            st.pyplot(fig)
 
 if __name__ == "__main__":
     if 'run_simulation' not in st.session_state:

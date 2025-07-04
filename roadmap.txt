@@ -4,7 +4,7 @@ This roadmap outlines the development of a finite volume (FV) solver for viscous
 
 ---
 
-## Phase 1: Streamlit Skeleton Application
+## COMPLETED Phase 1: Streamlit Skeleton Application
 
 **Objective**: Develop a minimal Streamlit frontend with no backend solver integration. This phase lays out the user interface architecture and prepares placeholders for all eventual interactive components.
 
@@ -26,7 +26,7 @@ This roadmap outlines the development of a finite volume (FV) solver for viscous
 
 ---
 
-## Phase 2: Implementation of Parameter Sliders in Streamlit
+## COMPLETED Phase 2: Implementation of Parameter Sliders in Streamlit
 
 **Objective**: Allow the user to input and adjust key simulation parameters directly through the frontend using sliders and input fields.
 
