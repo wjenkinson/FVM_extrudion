@@ -56,3 +56,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - Built with [Streamlit](https://streamlit.io/)
 - Scientific computing with [NumPy](https://numpy.org/) and [SciPy](https://www.scipy.org/)
 - Visualization with [Matplotlib](https://matplotlib.org/)
+- Developed with [Windsurf IDE](https://www.windsurfrider.com/)
