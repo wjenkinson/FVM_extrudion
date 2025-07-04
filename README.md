@@ -2,7 +2,7 @@
 
 A Streamlit-based interface for simulating 2D steady-state Stokes flow in a rectangular channel using the finite volume method.
 
-![Try it here](https://fvsimulator.streamlit.app/)
+Test the latest version of the app here: https://fvsimulator.streamlit.app/
 
 ## Features
 
