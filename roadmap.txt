@@ -1,0 +1,179 @@
+# Development Roadmap: Finite Volume Solver for 2D Steady-State Stokes Flow
+
+This roadmap outlines the development of a finite volume (FV) solver for viscous Newtonian fluid flow in an extrusion-like geometry. The initial goal is to build a minimal working solver and couple it with a Streamlit frontend. The roadmap is organized in sequential phases, each with specific tasks and well-defined success and failure criteria. The project starts with a rectangular 2D channel and will progressively evolve toward handling more complex geometries and rheologies such as Bingham plastic fluids and conical nozzles. The frontend will allow user interaction through parameter sliders and direct integration of the simulation output.
+
+---
+
+## Phase 1: Streamlit Skeleton Application
+
+**Objective**: Develop a minimal Streamlit frontend with no backend solver integration. This phase lays out the user interface architecture and prepares placeholders for all eventual interactive components.
+
+**Tasks**:
+- Create a new Streamlit app with a single file, e.g., `app.py`.
+- Define a title/header and placeholder sections for:
+  - Parameter sliders
+  - Simulation status
+  - Output visualization
+
+**Success Criteria**:
+- The app runs without any errors.
+- All UI placeholders are visible and well-organized.
+- The app does not yet perform any simulations.
+
+**Failure Criteria**:
+- Application fails to launch or crashes.
+- Missing or misaligned UI sections.
+
+---
+
+## Phase 2: Implementation of Parameter Sliders in Streamlit
+
+**Objective**: Allow the user to input and adjust key simulation parameters directly through the frontend using sliders and input fields.
+
+**Tasks**:
+- Add Streamlit slider widgets for:
+  - Horizontal grid resolution (`Nx`)
+  - Vertical grid resolution (`Ny`)
+  - Time step size (`dt`)
+  - Total simulation time (`T`)
+- Ensure all parameter values update dynamically and are stored for later use.
+
+**Success Criteria**:
+- All sliders appear in the frontend and can be manipulated interactively.
+- Changing a slider value updates a corresponding displayed parameter value.
+- No simulation is run at this stage; only UI functionality is tested.
+
+**Failure Criteria**:
+- Sliders do not respond to user input.
+- Slider state is not retained or displayed properly.
+
+---
+
+## Phase 3: Finite Volume Solver with Fixed Parameters
+
+**Objective**: Implement a basic FV solver in Python using hardcoded parameters for a 2D steady-state Stokes flow problem. The solver will assume a uniform structured grid and a rectangular channel geometry.
+
+**Tasks**:
+- Build the simulation core in a standalone Python script.
+- Discretize the incompressible Stokes equations using a finite volume approach.
+- Apply boundary conditions:
+  - Velocity inlet on the left boundary.
+  - Pressure outlet on the right boundary.
+  - No-slip walls on the top and bottom boundaries.
+- Use a pressure correction method for solving the saddle-point problem (velocity-pressure coupling).
+- Use explicit time stepping toward steady state.
+- Visualize the results using a color-coded 2D heatmap of velocity magnitude.
+
+**Success Criteria**:
+- The solver runs without crashing.
+- The velocity profile converges toward a stable parabolic profile typical of Poiseuille flow.
+- A static plot of velocity magnitude along the channel is generated.
+
+**Failure Criteria**:
+- Solver crashes due to instability or coding errors.
+- The velocity field fails to converge to the expected profile.
+- Visualization is absent or incorrect.
+
+---
+
+## Phase 4: Integrate Solver with Streamlit (Fixed Parameters)
+
+**Objective**: Connect the working FV solver from Phase 3 with the Streamlit frontend. Parameters remain fixed at this stage.
+
+**Tasks**:
+- Call the simulation script from within the Streamlit app.
+- Display the resulting velocity magnitude profile using color-coded plots (e.g., `matplotlib` or `plotly` heatmaps).
+- Add a "Run Simulation" button to trigger the solver.
+
+**Success Criteria**:
+- Clicking the button executes the solver and returns visual output to the app.
+- The flow profile updates and is viewable within the app.
+
+**Failure Criteria**:
+- The solver is not triggered correctly.
+- Output is missing, malformed, or fails to display.
+
+---
+
+## Phase 5: Parameter Hook-Up – Grid Resolution
+
+**Objective**: Link the first user-configurable parameter (`Nx`, `Ny`) to the solver.
+
+**Tasks**:
+- Modify the solver to accept grid resolution as arguments.
+- Pass grid resolution from Streamlit sliders into the solver.
+- Test stability and correctness of the solver at different resolutions.
+
+**Success Criteria**:
+- Running the solver with different resolutions produces consistent and expected results.
+- Solver remains stable across the range of slider values.
+
+**Failure Criteria**:
+- Resolution changes cause the solver to crash or produce divergent results.
+
+---
+
+## Phase 6: Parameter Hook-Up – Time Step Size
+
+**Objective**: Link the `dt` slider to the solver to allow adjustment of the time step size.
+
+**Tasks**:
+- Modify the solver to accept `dt` as an argument.
+- Ensure stability under a range of time steps.
+
+**Success Criteria**:
+- Simulation results vary appropriately with different time steps.
+- Stability is maintained within a reasonable range of `dt`.
+
+**Failure Criteria**:
+- Small or large time steps cause numerical instability.
+- Output is incorrect or simulation diverges.
+
+---
+
+## Phase 7: Parameter Hook-Up – Total Simulation Time
+
+**Objective**: Enable control over total simulation time via the frontend.
+
+**Tasks**:
+- Modify solver to accept `T` as an input and compute the correct number of time steps internally.
+- Ensure that results evolve correctly toward steady state within the specified time frame.
+
+**Success Criteria**:
+- Simulation runs for the correct number of steps.
+- Final output varies appropriately with changes in `T`.
+
+**Failure Criteria**:
+- Simulation does not terminate correctly.
+- Time duration control has no observable effect on results.
+
+---
+
+## Phase 8: MVP Completion
+
+**Objective**: Finalize a working end-to-end simulation and visualization system via Streamlit, fully controlled by user input.
+
+**Tasks**:
+- Ensure all frontend parameters (grid resolution, `dt`, and total time) correctly affect simulation behavior.
+- Include clear instructions and visual diagnostics in the app.
+- Refactor and document code for future extension.
+
+**Success Criteria**:
+- The solver and Streamlit app work as a coherent unit.
+- A user can run stable simulations of 2D steady Stokes flow with full control over mesh and time parameters.
+- The color-coded velocity magnitude output is generated and updates correctly.
+
+**Failure Criteria**:
+- Any component fails to function after full integration.
+- Simulation output does not reflect parameter changes.
+
+---
+
+## Future Extensions (Not Included in MVP)
+
+- Support for non-Newtonian fluids using Bingham plastic models.
+- Geometric extension from rectangular channels to conical nozzles.
+- Adaptive time stepping or semi-implicit integration for better performance.
+- More advanced boundary condition controls in the frontend.
+- Export options for field data and simulation results.
+
