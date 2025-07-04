@@ -2,7 +2,7 @@
 
 A Streamlit-based interface for simulating 2D steady-state Stokes flow in a rectangular channel using the finite volume method.
 
-![Example Visualization](https://raw.githubusercontent.com/yourusername/2d-extrusion-flow-solver/main/examples/velocity_field.png)
+![Try it here](https://fvsimulator.streamlit.app/)
 
 ## Features
 
@@ -70,7 +70,7 @@ Then open your web browser and navigate to the URL shown in the terminal (usuall
 
 ## Example Visualizations
 
-![detailed_results](example_results.png)
+
 
 ## Development Status
 
